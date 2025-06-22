@@ -37,22 +37,22 @@ export async function getLongUrl(id) {
     .from("urls")
     .select("id, original_url")
     .or(`short_url.eq.${id},custom_url.eq.${id}`)
-    .single();
+    .limit(1);
 
   console.log("Database query result:", {shortLinkData, shortLinkError});
 
-  if (shortLinkError && shortLinkError.code !== "PGRST116") {
+  if (shortLinkError) {
     console.error("Error fetching short link:", shortLinkError);
     return null;
   }
 
-  if (!shortLinkData) {
+  if (!shortLinkData || shortLinkData.length === 0) {
     console.log("No data found for id:", id);
     return null;
   }
 
-  console.log("Returning data:", shortLinkData);
-  return shortLinkData;
+  console.log("Returning data:", shortLinkData[0]);
+  return shortLinkData[0];
 }
 
 export async function createUrl({title, longUrl, customUrl, user_id}, qrcode) {
