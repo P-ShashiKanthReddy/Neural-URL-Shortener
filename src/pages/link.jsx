@@ -76,11 +76,11 @@ const LinkPage = () => {
             {url?.title}
           </span>
           <a
-            href={`${window.location.origin}/${link}`}
+            href={`https://imaginative-valkyrie-c0b150.netlify.app/${link}`}
             target="_blank"
             className="text-3xl sm:text-4xl text-blue-400 font-bold hover:underline cursor-pointer"
           >
-            {window.location.origin}/{link}
+            https://imaginative-valkyrie-c0b150.netlify.app/{link}
           </a>
           <a
             href={url?.original_url}
@@ -97,7 +97,7 @@ const LinkPage = () => {
             <Button
               variant="ghost"
               onClick={() =>
-                navigator.clipboard.writeText(`${window.location.origin}/${link}`)
+                navigator.clipboard.writeText(`https://imaginative-valkyrie-c0b150.netlify.app/${link}`)
               }
             >
               <Copy />
