@@ -33,26 +33,31 @@ export async function getUrl({id, user_id}) {
 export async function getLongUrl(id) {
   console.log("getLongUrl called with id:", id);
   
-  let {data: shortLinkData, error: shortLinkError} = await supabase
-    .from("urls")
-    .select("id, original_url")
-    .or(`short_url.eq.${id},custom_url.eq.${id}`)
-    .limit(1);
+  try {
+    let {data: shortLinkData, error: shortLinkError} = await supabase
+      .from("urls")
+      .select("id, original_url")
+      .or(`short_url.eq.${id},custom_url.eq.${id}`)
+      .maybeSingle(); // Use maybeSingle() instead of limit(1)
 
-  console.log("Database query result:", {shortLinkData, shortLinkError});
+    console.log("Database query result:", {shortLinkData, shortLinkError});
 
-  if (shortLinkError) {
-    console.error("Error fetching short link:", shortLinkError);
-    return null;
+    if (shortLinkError) {
+      console.error("Error fetching short link:", shortLinkError);
+      throw new Error(shortLinkError.message);
+    }
+
+    if (!shortLinkData) {
+      console.log("No data found for id:", id);
+      return null;
+    }
+
+    console.log("Returning data:", shortLinkData);
+    return shortLinkData;
+  } catch (error) {
+    console.error("Exception in getLongUrl:", error);
+    throw error;
   }
-
-  if (!shortLinkData || shortLinkData.length === 0) {
-    console.log("No data found for id:", id);
-    return null;
-  }
-
-  console.log("Returning data:", shortLinkData[0]);
-  return shortLinkData[0];
 }
 
 export async function createUrl({title, longUrl, customUrl, user_id}, qrcode) {
