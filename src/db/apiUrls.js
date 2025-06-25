@@ -34,11 +34,29 @@ export async function getLongUrl(id) {
   console.log("getLongUrl called with id:", id);
   
   try {
+    // First, let's check what URLs exist in the database
+    console.log("Checking all URLs in database...");
+    const {data: allUrls, error: allUrlsError} = await supabase
+      .from("urls")
+      .select("id, short_url, custom_url, original_url");
+    
+    if (allUrlsError) {
+      console.error("Error fetching all URLs:", allUrlsError);
+    } else {
+      console.log("All URLs in database:", allUrls);
+      console.log("Looking for URLs matching:", id);
+      const matchingUrls = allUrls.filter(url => 
+        url.short_url === id || url.custom_url === id
+      );
+      console.log("Matching URLs found:", matchingUrls);
+    }
+
+    // Now try the original query
     let {data: shortLinkData, error: shortLinkError} = await supabase
       .from("urls")
-      .select("id, original_url")
+      .select("id, original_url, short_url, custom_url")
       .or(`short_url.eq.${id},custom_url.eq.${id}`)
-      .maybeSingle(); // Use maybeSingle() instead of limit(1)
+      .maybeSingle();
 
     console.log("Database query result:", {shortLinkData, shortLinkError});
 
@@ -49,7 +67,26 @@ export async function getLongUrl(id) {
 
     if (!shortLinkData) {
       console.log("No data found for id:", id);
-      return null;
+      
+      // Let's try individual queries to debug
+      console.log("Trying individual queries...");
+      
+      const {data: byShortUrl} = await supabase
+        .from("urls")
+        .select("id, original_url, short_url")
+        .eq("short_url", id)
+        .maybeSingle();
+      
+      const {data: byCustomUrl} = await supabase
+        .from("urls")
+        .select("id, original_url, custom_url")
+        .eq("custom_url", id)
+        .maybeSingle();
+      
+      console.log("Query by short_url:", byShortUrl);
+      console.log("Query by custom_url:", byCustomUrl);
+      
+      return byShortUrl || byCustomUrl || null;
     }
 
     console.log("Returning data:", shortLinkData);
