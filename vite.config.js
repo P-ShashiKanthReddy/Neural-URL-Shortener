@@ -11,7 +11,4 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  rules: {
-    "react/prop-types": 0,
-  },
 });
