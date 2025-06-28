@@ -4,6 +4,12 @@ A modern, full-featured URL shortener built with React, Supabase, and Tailwind C
 
 ![Neural URL Shortener](public/banner1.png)
 
+## 🚀 Live Demo
+
+**[Try Neural URL Shortener](https://neural-shortener.netlify.app)**
+
+Experience the full functionality of the URL shortener with user authentication, analytics, and QR code generation.
+
 ## ✨ Features
 
 - **URL Shortening**: Convert long URLs into short, memorable links
@@ -188,6 +194,7 @@ The application can be deployed to various platforms:
 1. Build the project: `npm run build`
 2. Deploy the `dist` folder to Netlify
 3. Configure environment variables in Netlify dashboard
+4. Add `_redirects` file for client-side routing support
 
 ### Vercel
 1. Connect your repository to Vercel
