@@ -65,6 +65,10 @@ const LinkPage = () => {
     link = url?.custom_url ? url?.custom_url : url.short_url;
   }
 
+  const getShortUrl = () => {
+    return `https://neural-shortener.netlify.app/${link}`;
+  };
+
   return (
     <>
       {(loading || loadingStats) && (
@@ -76,11 +80,11 @@ const LinkPage = () => {
             {url?.title}
           </span>
           <a
-            href={`${window.location.origin}/${link}`}
+            href={getShortUrl()}
             target="_blank"
             className="text-3xl sm:text-4xl text-blue-400 font-bold hover:underline cursor-pointer"
           >
-            {window.location.origin}/{link}
+            {getShortUrl()}
           </a>
           <a
             href={url?.original_url}
@@ -97,7 +101,7 @@ const LinkPage = () => {
             <Button
               variant="ghost"
               onClick={() =>
-                navigator.clipboard.writeText(`${window.location.origin}/${link}`)
+                navigator.clipboard.writeText(getShortUrl())
               }
             >
               <Copy />
